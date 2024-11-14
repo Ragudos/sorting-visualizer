@@ -125,15 +125,19 @@ async function shellSort(arr) {
         updateShellSortMetadata(i, j, gap, currentPass);
       }
 
-      highlightEl(arr[j], "swap");
-      highlightEl(tmp, "swap");
+      if (i != j) {
+        highlightEl(arr[j], "swap");
+        highlightEl(tmp, "swap");
 
-      await wait(250);
+        await wait(250);
 
-      arr[j].style.setProperty("--_value", tmpValue + "%");
+        arr[j].style.setProperty("--_value", tmpValue + "%");
 
-      highlightEl(arr[j], "reset");
-      highlightEl(tmp, "reset");
+        highlightEl(arr[j], "reset");
+        highlightEl(tmp, "reset");
+      } else {
+        highlightEl(tmp, "reset");
+      }
 
       await wait(250);
     }
