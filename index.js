@@ -88,9 +88,10 @@ async function insertionSort(arr) {
 
       nextEl.style.setProperty("--_value", currValue + "%");
 
-      highlightEl(nextEl, "reset");
-
       await wait(250);
+
+      highlightEl(curr, "reset");
+      highlightEl(nextEl, "reset");
 
       j -= 1;
     }
@@ -104,10 +105,10 @@ async function insertionSort(arr) {
 
     nextEl.style.setProperty("--_value", tmpValue + "%");
 
+    await wait(250);
+
     highlightEl(nextEl, "reset");
     highlightEl(tmp, "reset");
-
-    await wait(250);
   }
 }
 
