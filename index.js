@@ -19,6 +19,9 @@ document.querySelectorAll("[data-sort]").forEach((btn) => {
       case "shell":
         await shellSort(Array.from(graphContainer.children));
         break;
+      case "insertion":
+        await insertionSort(Array.from(graphContainer.children));
+        break;
     }
 
     graphContainer.removeAttribute("data-sorting", "true");
@@ -43,6 +46,69 @@ document.getElementById("randomize").addEventListener("click", () => {
 
 function random(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
+}
+
+/**
+ *
+ * @param {HTMLElement[]} arr
+ */
+async function insertionSort(arr) {
+  const arrLength = arr.length;
+
+  for (let i = 1; i < arrLength; ++i) {
+    const tmp = arr[i];
+    const tmpValue = getDataValue(tmp);
+
+    highlightEl(tmp, "tmp");
+
+    await wait(250);
+
+    let j = i - 1;
+
+    while (j >= 0) {
+      const curr = arr[j];
+      const currValue = getDataValue(curr);
+
+      highlightEl(curr, "swap");
+
+      await wait(250);
+
+      if (currValue <= tmpValue) {
+        highlightEl(curr, "reset");
+
+        await wait(250);
+        break;
+      }
+
+      const nextEl = arr[j + 1];
+
+      highlightEl(nextEl, "swap");
+
+      await wait(250);
+
+      nextEl.style.setProperty("--_value", currValue + "%");
+
+      highlightEl(nextEl, "reset");
+
+      await wait(250);
+
+      j -= 1;
+    }
+
+    const nextEl = arr[j + 1];
+
+    highlightEl(nextEl, "swap");
+    highlightEl(tmp, "swap");
+
+    await wait(250);
+
+    nextEl.style.setProperty("--_value", tmpValue + "%");
+
+    highlightEl(nextEl, "reset");
+    highlightEl(tmp, "reset");
+
+    await wait(250);
+  }
 }
 
 function updateShellSortMetadata(i, j, gap, currPass) {
