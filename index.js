@@ -8,16 +8,24 @@ const graphContainer = document.getElementById("graph-container");
 document.querySelectorAll("[data-sort]").forEach((btn) => {
   const typ = btn.getAttribute("data-sort");
 
-  btn.addEventListener("click", () => {
+  btn.addEventListener("click", async () => {
+    graphContainer.setAttribute("data-sorting", "true");
+
     switch (typ) {
       case "shell":
-        shellSort(Array.from(graphContainer.children));
+        await shellSort(Array.from(graphContainer.children));
         break;
     }
+
+    graphContainer.removeAttribute("data-sorting", "true");
   });
 });
 
 document.getElementById("randomize").addEventListener("click", () => {
+  if (graphContainer.getAttribute("data-sorting") == "true") {
+    return;
+  }
+
   graphContainer.innerHTML = "";
 
   for (let i = 0; i < 25; ++i) {
