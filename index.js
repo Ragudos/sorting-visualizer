@@ -9,6 +9,10 @@ document.querySelectorAll("[data-sort]").forEach((btn) => {
   const typ = btn.getAttribute("data-sort");
 
   btn.addEventListener("click", async () => {
+    if (graphContainer.getAttribute("data-sorting") == "true") {
+      return;
+    }
+
     graphContainer.setAttribute("data-sorting", "true");
 
     switch (typ) {
