@@ -1,0 +1,61 @@
+:root {
+    --max-content-width: 1000px;
+    --padding-inline: 2rem;
+}
+
+*,
+::before,
+::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+
+    background-color: wheat;
+}
+
+.container {
+    width: calc(min(100dvw, var(--max-content-width)) - var(--padding-inline) * 2);
+    padding-block: 1rem;
+
+    margin-inline: auto;
+}
+
+#graph-container {
+    height: max(40dvh, 20rem);
+
+    border: 1px solid black;
+
+    display: flex;
+    gap: 0.25vmin;
+    align-items: flex-end;
+
+    padding-inline: 0.25rem;
+}
+
+#graph-container>* {
+    height: var(--_value, 0);
+    width: 4%;
+
+    background-color: blue;
+
+    transition: 150ms ease;
+}
+
+#graph-container>.tmp {
+    background-color: yellow;
+}
+
+#graph-container>.swap {
+    background-color: green;
+}
+
+.ctrls-container {
+    margin-top: 0.5rem;
+
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+}
