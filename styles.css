@@ -37,7 +37,7 @@ body {
 
 #graph-container>* {
     height: var(--_value, 0);
-    width: 4%;
+    width: 5%;
 
     background-color: blue;
 
