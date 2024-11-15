@@ -22,6 +22,9 @@ document.querySelectorAll("[data-sort]").forEach((btn) => {
       case "insertion":
         await insertionSort(Array.from(graphContainer.children));
         break;
+      case "bubble":
+        await bubbleSort(Array.from(graphContainer.children));
+        break;
     }
 
     graphContainer.removeAttribute("data-sorting", "true");
@@ -35,7 +38,7 @@ document.getElementById("randomize").addEventListener("click", () => {
 
   graphContainer.innerHTML = "";
 
-  for (let i = 0; i < 25; ++i) {
+  for (let i = 0; i < 20; ++i) {
     const div = document.createElement("div");
 
     div.style.setProperty("--_value", random(1, 100) + "%");
@@ -46,6 +49,41 @@ document.getElementById("randomize").addEventListener("click", () => {
 
 function random(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
+}
+
+/**
+ *
+ * @param {HTMLElement[]} arr
+ */
+async function bubbleSort(arr) {
+  const l = arr.length;
+  const l2 = l - 1;
+  
+  for (let i = 0; i < l2; ++i) {
+    for (let j = 0, l3 = l - i - 1; j < l3; ++j) {
+      const el1 = arr[j];
+      const el2 = arr[j + 1];
+      const el1Val = getDataValue(el1);
+      const el2Val = getDataValue(el2);
+
+      highlightEl(el1, "swap");
+      highlightEl(el2, "swap");
+
+      await wait(250);
+
+      if (el1Val > el2Val) {
+        el1.style.setProperty("--_value", el2Val + "%");
+        el2.style.setProperty("--_value", el1Val + "%");
+      }
+
+      await wait(250);
+
+      highlightEl(el1, "reset");
+      highlightEl(el2, "reset");
+
+      await wait(250);
+    }
+  }
 }
 
 /**
@@ -69,14 +107,7 @@ async function insertionSort(arr) {
       const curr = arr[j];
       const currValue = getDataValue(curr);
 
-      highlightEl(curr, "swap");
-
-      await wait(250);
-
       if (currValue <= tmpValue) {
-        highlightEl(curr, "reset");
-
-        await wait(250);
         break;
       }
 
@@ -94,6 +125,13 @@ async function insertionSort(arr) {
       highlightEl(nextEl, "reset");
 
       j -= 1;
+    }
+
+    if (j + 1 == i) {
+      highlightEl(tmp, "reset");
+
+      await wait(250);
+      continue;
     }
 
     const nextEl = arr[j + 1];
