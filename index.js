@@ -25,6 +25,9 @@ document.querySelectorAll("[data-sort]").forEach((btn) => {
       case "bubble":
         await bubbleSort(Array.from(graphContainer.children));
         break;
+      case "quick sort":
+        await quickSort(Array.from(graphContainer.children));
+        break;
     }
 
     graphContainer.removeAttribute("data-sorting", "true");
@@ -38,9 +41,10 @@ document.getElementById("randomize").addEventListener("click", () => {
 
   graphContainer.innerHTML = "";
 
-  for (let i = 0; i < 20; ++i) {
+  for (let i = 0; i < 39; ++i) {
     const div = document.createElement("div");
 
+    div.style.setProperty("--_idx", i);
     div.style.setProperty("--_value", random(1, 100) + "%");
 
     graphContainer.appendChild(div);
@@ -53,12 +57,123 @@ function random(min, max) {
 
 /**
  *
+ * @param {HTMLElement} el1
+ * @param {HTMLElement} el2
+ */
+async function swap(el1, el2) {
+  const idx = +getComputedStyle(el1).getPropertyValue("--_idx");
+  const idx2 = +getComputedStyle(el2).getPropertyValue("--_idx");
+
+  highlightEl(el1, "swap");
+  highlightEl(el2, "swap");
+
+  await wait(500);
+
+  el1.style.setProperty("--_idx", idx2);
+  el2.style.setProperty("--_idx", idx);
+
+  await wait(1000);
+
+  highlightEl(el1, "reset");
+  highlightEl(el2, "reset");
+}
+let nthPivot = 1;
+/**
+ *
+ * @param {HTMLElement[]} arr
+ * @param {number} low
+ * @param {number} high
+ *
+ * Hoare's Partition
+ */
+async function partition(arr, low, high) {
+  let pivot = arr[low];
+  const pivotValue = getDataValue(pivot);
+  let i = low - 1;
+  let j = high + 1;
+
+  pivot.classList.add("tmp");
+  const txt = document.createElement("div");
+  txt.classList.add("text");
+  txt.textContent = "pivot: " + pivotValue + " (" + nthPivot++ + ")";
+  pivot.appendChild(txt);
+
+  while (true) {
+    highlightEl(pivot, "tmp");
+    do {
+      i++;
+      if (arr[i] === pivot) {
+        continue;
+      }
+
+      highlightEl(arr[i], "swap");
+      await wait(500);
+      highlightEl(arr[i], "reset");
+    } while (getDataValue(arr[i]) < pivotValue);
+
+    do {
+      j--;
+      highlightEl(arr[j], "swap");
+      await wait(500);
+      highlightEl(arr[j], "reset");
+    } while (getDataValue(arr[j]) > pivotValue);
+
+    if (i >= j) {
+      nthPivot--;
+      pivot.classList.remove("tmp");
+      pivot.removeChild(txt);
+
+      return j;
+    }
+
+    await swap(arr[i], arr[j]);
+    const tmp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = tmp;
+    pivot.removeChild(txt);
+    pivot = arr[low];
+    pivot.appendChild(txt);
+  }
+}
+
+/**
+ *
+ * @param {HTMLElement[]} arr
+ * @param {number} low
+ * @param {number} high
+ * @returns
+ */
+async function qs(arr, low, high) {
+  if (low >= high) {
+    return;
+  }
+
+  const pivot = await partition(arr, low, high);
+
+  await Promise.all([qs(arr, low, pivot), qs(arr, pivot + 1, high)]);
+}
+
+/**
+ *
+ * @param {HTMLElement[]} arr
+ * @returns
+ */
+async function quickSort(arr) {
+  if (arr.length <= 1) {
+    return arr;
+  }
+
+  await qs(arr, 0, arr.length - 1);
+}
+
+/**
+ *
  * @param {HTMLElement[]} arr
  */
 async function bubbleSort(arr) {
   const l = arr.length;
   const l2 = l - 1;
-  
+
   for (let i = 0; i < l2; ++i) {
     for (let j = 0, l3 = l - i - 1; j < l3; ++j) {
       const el1 = arr[j];
